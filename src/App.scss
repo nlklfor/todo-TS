@@ -8,3 +8,13 @@
   text-decoration: none;
   list-style: none;
 }
+
+ul{
+  display: flex;
+  flex-direction: column;
+}
+
+li{
+  display: flex;
+  margin-top: 10px;
+}
