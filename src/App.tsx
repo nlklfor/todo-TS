@@ -5,12 +5,6 @@ import {v1} from "uuid";
 
 export type FilteredTypes = 'all' | 'completed' | 'active';
 
-type TaskListType = {
-    id: string,
-    title: string,
-    isChecked: boolean,
-}
-
 type TodoListType = {
     id: string;
     title: string;
@@ -53,7 +47,21 @@ function App() {
             ],
     })
 
+    const [todoTitle, setTodoTitle] = useState('')
 
+
+    const onChangeTodoTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setTodoTitle(event.target.value)
+        console.log(todoTitle);
+    }
+
+    const onAddTodo = () => {
+        let tmpTodos = todos;
+        let todo: TodoListType = {id: v1(), title: todoTitle, filtered: 'all'}
+        tmpTodos.push(todo)
+        setTodos(tmpTodos);
+        // -------------------------
+    }
     const checkedTaskChange = (taskId: string, todoListId: string, isChecked: boolean) => {
         let tasks = tasksObj[todoListId];
         let findTasks = tasks.find(t => t.id === taskId);
@@ -89,9 +97,18 @@ function App() {
         setTasksObj({...tasksObj})
     }
 
+    const onDeleteTodo = (id: string) => {
+        let filteredTodo = todos.filter(todo => todo.id !== id);
+        setTodos(filteredTodo);
+        delete tasksObj[id];
+        setTasksObj({...tasksObj});
+    }
+
     return (
         <div className="App">
-            {todos.map((todo) => {
+            <input value={todoTitle} onChange={onChangeTodoTitle}/>
+            <button onClick={onAddTodo}>Add Todo</button>
+            { todos.length > 0 ? todos.map((todo) => {
                 let tasksForTodo = tasksObj[todo.id];
                 if (todo.filtered === 'completed') {
                     tasksForTodo = tasksForTodo.filter(item => item.isChecked)
@@ -103,13 +120,14 @@ function App() {
                     tasksForTodo = tasksForTodo.filter(item => item.isChecked || !item.isChecked)
                 }
 
+
                 return (
                     <Todo key={todo.id} title={todo.title} changeFilter={onChangeFilter} filtered={todo.filtered}
                           checkedTaskChange={checkedTaskChange} setTask={setTasksObj}
                           tasks={tasksForTodo} id={todo.id} onAdd={onAddTask}
-                          onDelete={onDeleteTask}/>
+                          onDelete={onDeleteTask} onDeleteTodo={onDeleteTodo}/>
                 )
-            })}
+            }) : <h1>There are no TodoLists</h1>}
         </div>
     );
 }

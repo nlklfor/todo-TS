@@ -14,6 +14,7 @@ type PropsType = {
     tasks: Array<TaskType>
     checkedTaskChange: (id: string, todoListId: string, isChecked: boolean) => void;
     onDelete: (id: string, todoId: string) => void;
+    onDeleteTodo: (id: string) => void;
     onAdd: (taskTitle: string, todoListId: string) => void;
     changeFilter: (value: FilteredTypes, todoId: string) => void;
     setTask: Function;
@@ -55,6 +56,10 @@ function Todo(props: PropsType) {
 
     }
 
+    const onDeleteTodoHandle = () => {
+        props.onDeleteTodo(props.id)
+    }
+
     const onPressKey = (event: KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
             onAddTaskHandle()
@@ -73,6 +78,8 @@ function Todo(props: PropsType) {
     }
 
 
+
+
     useEffect(() => {
         console.log('gizmo')
     }, [])
@@ -80,6 +87,7 @@ function Todo(props: PropsType) {
     return (
         <div>
             <h3>{props.title}</h3>
+            <button onClick={onDeleteTodoHandle}>DELETE TODO</button>
             <div>
                 {error && <p className={'error'}>{error}</p>}
                 <input className={`${error ? 'error-input' : 'input'}`} onKeyDown={onPressKey} value={title}
